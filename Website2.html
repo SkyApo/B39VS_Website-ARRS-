@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlueEngineering — Engineering the Future</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --near-black: #0f0f0f;
+    --dark: #161616;
+    --dark-2: #1e1e1e;
+    --mid: #2a2a2a;
+    --border: #2e2e2e;
+    --grey-dark: #444;
+    --grey: #666;
+    --grey-light: #999;
+    --silver: #c0c0c0;
+    --white: #f5f5f5;
+    --pure: #ffffff;
+    --accent: #4a90d9;
+    --accent-dim: rgba(74,144,217,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 0 5%; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(8,8,8,0.93); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo-mark {
+     width: 48px;
+    height: 36px;
+    background-size: cover;
+    background-image: url("BlueEngineeringLogo.jpeg");
+    border-radius: 8px;
+    padding: 6px;
+  }
+  .nav-logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 0.1em; color: var(--white); }
+  .nav-logo-text span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 1.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--grey-light);
+    font-size: 0.76rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--accent) !important; color: var(--white) !important;
+    padding: 7px 16px; border-radius: 2px;
+  }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+  .hamburger span { display: block; width: 24px; height: 1.5px; background: var(--white); transition: all 0.3s; }
+  .mobile-nav {
+    display: none; position: fixed; top: 64px; left: 0; right: 0;
+    background: rgba(8,8,8,0.98); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border); z-index: 999;
+    flex-direction: column; padding: 0 5%;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    text-decoration: none; color: var(--grey-light); font-size: 0.92rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    border-bottom: 1px solid var(--border); padding: 0.95rem 0; transition: color 0.2s;
+  }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  section { padding: 100px 5%; }
+  .divider { height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .section-label::before { content: ''; display: inline-block; width: 22px; height: 1px; background: var(--accent); }
+  .section-label.center { justify-content: center; }
+  .big-h { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,5vw,5rem); color: var(--white); letter-spacing: 0.03em; }
+  .fade-in { opacity: 0; transform: translateY(18px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--accent); color: var(--white);
+    padding: 13px 26px; text-decoration: none; font-size: 0.8rem;
+    font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 2px; transition: opacity 0.2s, transform 0.2s;
+    cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    border: 1px solid var(--border); color: var(--grey-light); background: none;
+    padding: 13px 26px; text-decoration: none; font-size: 0.8rem;
+    font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 2px; transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--grey-light); color: var(--white); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; display: flex; align-items: center;
+    padding-top: 64px; position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 70% 50%, rgba(74,144,217,0.06) 0%, transparent 70%),
+                linear-gradient(180deg, var(--black) 0%, var(--near-black) 100%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px; opacity: 0.18;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 80%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 880px; }
+  .hero-tag {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-tag::after { content: ''; display: block; height: 1px; width: 50px; background: var(--accent); }
+  .hero-h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem); line-height: 0.9; letter-spacing: 0.02em;
+    color: var(--pure); margin-bottom: 0.3em;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero-h1 .ac { color: var(--accent); }
+  .hero-sub {
+    font-size: clamp(0.95rem, 2vw, 1.15rem); color: var(--grey-light);
+    max-width: 540px; margin-bottom: 2.5rem; font-weight: 300;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.8s 0.3s ease both; }
+  .hero-stats {
+    position: absolute; bottom: 50px; right: 5%;
+    display: flex; gap: 2.5rem; animation: fadeUp 0.8s 0.4s ease both;
+  }
+  .stat { text-align: right; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; color: var(--white); line-height: 1; letter-spacing: 0.05em; }
+  .stat-num span { color: var(--accent); font-size: 1.7rem; }
+  .stat-label { font-size: 0.68rem; color: var(--grey); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
+
+  /* ── ABOUT ── */
+  #about { background: var(--near-black); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .about-h { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,5vw,4.5rem); line-height: 0.95; color: var(--white); margin-bottom: 1.5rem; }
+  .body-p { color: var(--grey-light); font-size: 0.93rem; line-height: 1.8; margin-bottom: 1.1rem; }
+  .vm-stack { display: flex; flex-direction: column; gap: 1.1rem; }
+  .vm-card {
+    border: 1px solid var(--border); padding: 1.3rem 1.5rem; border-radius: 4px;
+    background: var(--dark); position: relative; overflow: hidden; transition: border-color 0.3s;
+  }
+  .vm-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); }
+  .vm-card:hover { border-color: var(--grey-dark); }
+  .vm-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+  .vm-text { color: var(--silver); font-size: 0.87rem; line-height: 1.7; }
+  .mission-list { list-style: none; margin-top: 0.4rem; }
+  .mission-list li { color: var(--silver); font-size: 0.84rem; line-height: 1.7; padding: 0.3rem 0 0.3rem 1.2rem; position: relative; }
+  .mission-list li::before { content: '→'; color: var(--accent); position: absolute; left: 0; font-size: 0.75rem; }
+
+  /* ── SUSTAINABILITY ── */
+  #sustainability { background: var(--black); }
+  .sustain-intro { color: var(--grey-light); font-size: 0.92rem; line-height: 1.8; max-width: 660px; margin-top: 0.8rem; margin-bottom: 2.5rem; }
+  .sustain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1rem; }
+  .s-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    padding: 1.3rem; background: var(--dark); border: 1px solid var(--border);
+    border-radius: 4px; transition: border-color 0.3s;
+  }
+  .s-item:hover { border-color: var(--grey-dark); }
+  .s-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 1px; }
+  .s-title { font-weight: 500; font-size: 0.88rem; color: var(--white); margin-bottom: 0.3rem; }
+  .s-text { font-size: 0.82rem; color: var(--grey); line-height: 1.65; }
+
+  /* ── SDG ── */
+  #sdg { background: var(--near-black); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .sdg-intro { color: var(--grey-light); font-size: 0.92rem; line-height: 1.8; max-width: 660px; margin-top: 0.8rem; margin-bottom: 2.5rem; }
+  .sdg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+  .sdg-card {
+    background: var(--dark); border: 1px solid var(--border); border-radius: 4px;
+    padding: 1.8rem 1.5rem; position: relative; overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .sdg-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .sdg-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+  .sdg-num { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.5rem; }
+  .sdg-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 0.8rem; line-height: 1.2; }
+  .sdg-desc { font-size: 0.82rem; color: var(--grey); line-height: 1.65; margin-bottom: 1.2rem; }
+  .sdg-stat { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--accent); letter-spacing: 0.05em; line-height: 1; }
+  .sdg-stat span { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--grey); display: block; margin-top: 0.2rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ── VALUES ── */
+  #values { background: var(--black); }
+  .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .value-item { background: var(--black); padding: 2rem; transition: background 0.3s; }
+  .value-item:hover { background: var(--dark); }
+  .value-num { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 0.8rem; }
+  .value-icon { font-size: 1.7rem; margin-bottom: 0.8rem; }
+  .value-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 0.06em; color: var(--white); margin-bottom: 0.6rem; }
+  .value-desc { color: var(--grey); font-size: 0.83rem; line-height: 1.7; }
+
+  /* ── HIERARCHY ── */
+  #hierarchy { background: var(--near-black); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .org-chart { display: flex; flex-direction: column; align-items: center; max-width: 1000px; margin: 0 auto; }
+  .org-v { width: 1px; height: 32px; background: linear-gradient(to bottom, var(--accent), var(--border)); margin: 0 auto; }
+  .org-h-wrap { display: flex; justify-content: center; width: 100%; }
+  .org-h { position: relative; height: 32px; width: 70%; }
+  .org-h::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); }
+  .org-h::after { content: ''; position: absolute; top: 0; left: 50%; width: 1px; height: 50%; background: var(--border); }
+  .org-row { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; width: 100%; }
+  .org-node {
+    background: var(--dark); border: 1px solid var(--border);
+    padding: 1.2rem 1.4rem; border-radius: 4px; text-align: center;
+    min-width: 200px; flex: 1; max-width: 260px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .org-node:hover { border-color: var(--accent); background: var(--dark-2); }
+  .org-node.top { background: var(--dark-2); border-color: var(--accent); min-width: 240px; max-width: 300px; }
+  .org-node .role {
+    font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 0.4rem;
+  }
+  .org-node .name { font-weight: 600; font-size: 0.95rem; color: var(--white); margin-bottom: 0.2rem; }
+  .org-node .fullname { font-size: 0.76rem; color: var(--grey-light); margin-bottom: 0.6rem; font-style: italic; }
+  .org-node .tags { display: flex; flex-direction: column; gap: 0.25rem; margin-top: 0.4rem; }
+  .org-tag {
+    font-size: 0.68rem; color: var(--grey); background: var(--mid);
+    border-radius: 2px; padding: 2px 7px; text-align: center; line-height: 1.4;
+  }
+
+  /* ── PRODUCTS ── */
+  #products { background: var(--black); }
+  .product-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 3rem; overflow-x: auto; }
+  .tab-btn {
+    background: none; border: none; padding: 1rem 2rem; cursor: pointer;
+    font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--grey); border-bottom: 2px solid transparent;
+    margin-bottom: -1px; white-space: nowrap; transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; animation: fadeUp 0.4s ease both; }
+  .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .product-name { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem,4vw,3.5rem); color: var(--white); letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+  .product-full { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; }
+  .product-desc { color: var(--grey-light); font-size: 0.92rem; line-height: 1.8; margin-bottom: 1.1rem; }
+  .product-features { list-style: none; margin-bottom: 1.5rem; }
+  .product-features li {
+    padding: 0.65rem 0; border-bottom: 1px solid var(--border);
+    color: var(--silver); font-size: 0.85rem; display: flex; align-items: flex-start; gap: 0.8rem;
+  }
+  .product-features li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-size: 0.76rem; margin-top: 2px; }
+  .product-features li:last-child { border-bottom: none; }
+
+  /* ── IMAGE GALLERY ── */
+  .img-gallery { display: flex; flex-direction: column; gap: 1rem; }
+  .img-main {
+    width: 100%; aspect-ratio: 4/3; object-fit: contain;
+    background: var(--dark); border: 1px solid var(--border);
+    border-radius: 4px; display: block;
+    transition: border-color 0.3s;
+  }
+  .img-main.light-bg { background: #c5d8ea; }
+  .img-thumbs { display: flex; gap: 0.7rem; }
+  .img-thumb {
+    flex: 1; aspect-ratio: 4/3; object-fit: contain;
+    background: var(--dark); border: 1px solid var(--border);
+    border-radius: 3px; cursor: pointer;
+    transition: border-color 0.3s, opacity 0.2s; opacity: 0.5;
+  }
+  .img-thumb.light-bg { background: #c5d8ea; }
+  .img-thumb:hover, .img-thumb.active { opacity: 1; border-color: var(--accent); }
+
+  /* ── IVIS SPECS ── */
+  .ivis-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.3rem; }
+  .ivis-spec {
+    background: var(--dark-2); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.8rem 1rem; transition: border-color 0.3s;
+  }
+  .ivis-spec:hover { border-color: var(--grey-dark); }
+  .ivis-spec-label { font-family: 'DM Mono', monospace; font-size: 0.57rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey); margin-bottom: 0.25rem; }
+  .ivis-spec-val { font-size: 0.84rem; color: var(--silver); font-weight: 500; }
+
+  /* ── IMPACT BAR ── */
+  .impact-bar {
+    background: var(--dark); border: 1px solid rgba(74,144,217,0.25);
+    border-left: 3px solid var(--accent); border-radius: 3px;
+    padding: 0.9rem 1.1rem; margin-bottom: 0.7rem;
+  }
+  .impact-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--accent); letter-spacing: 0.06em; line-height: 1; }
+  .impact-text { font-size: 0.76rem; color: var(--grey); margin-top: 0.2rem; }
+
+  /* ── SALES ── */
+  #sales { background: var(--near-black); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .sales-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+  .sale-card {
+    background: var(--dark); border: 1px solid var(--border);
+    border-radius: 4px; overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .sale-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .sale-card.featured { border-color: rgba(74,144,217,0.4); }
+  .sale-card-head {
+    background: var(--dark-2); padding: 1.3rem 1.4rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .sale-card-head.feat { background: rgba(74,144,217,0.07); }
+  .sale-card-icon { font-size: 1.7rem; }
+  .sale-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; color: var(--white); }
+  .sale-card-sub { font-family: 'DM Mono', monospace; font-size: 0.57rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
+  .sale-card-body { padding: 1.4rem; }
+  .sale-badge {
+    display: inline-block; background: var(--accent-dim); color: var(--accent);
+    border: 1px solid rgba(74,144,217,0.3); padding: 3px 10px;
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; margin-bottom: 0.9rem;
+  }
+  .sale-badge.feat { background: rgba(74,144,217,0.2); border-color: rgba(74,144,217,0.5); }
+  .sale-desc { color: var(--grey-light); font-size: 0.85rem; line-height: 1.7; margin-bottom: 1.1rem; }
+  .sale-specs { list-style: none; margin-bottom: 1.4rem; }
+  .sale-specs li { display: flex; justify-content: space-between; align-items: center; padding: 0.42rem 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+  .sale-specs li:last-child { border-bottom: none; }
+  .sk { color: var(--grey); font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.08em; }
+  .sv { color: var(--silver); font-weight: 500; }
+  .enquiry-strip {
+    background: var(--dark); border: 1px solid var(--accent); border-radius: 4px;
+    padding: 2.5rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;
+  }
+  .es-h { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 0.4rem; }
+  .es-p { color: var(--grey-light); font-size: 0.86rem; line-height: 1.6; }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--black); }
+  .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .test-card { background: var(--dark); border: 1px solid var(--border); border-radius: 4px; padding: 1.8rem; transition: border-color 0.3s; }
+  .test-card:hover { border-color: var(--grey-dark); }
+  .test-quote { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--accent); line-height: 1; opacity: 0.4; margin-bottom: -0.4rem; }
+  .test-text { color: var(--silver); font-size: 0.89rem; line-height: 1.75; font-style: italic; margin-bottom: 1.4rem; }
+  .test-author { display: flex; align-items: center; gap: 0.9rem; }
+  .test-av { width: 38px; height: 38px; background: var(--mid); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; color: var(--accent); flex-shrink: 0; }
+  .test-name { font-weight: 500; font-size: 0.86rem; color: var(--white); }
+  .test-role { font-family: 'DM Mono', monospace; font-size: 0.59rem; color: var(--grey); letter-spacing: 0.1em; text-transform: uppercase; }
+  .stars { display: flex; gap: 3px; margin-bottom: 0.9rem; }
+  .star { color: var(--accent); font-size: 0.83rem; }
+
+  /* ── ENQUIRY ── */
+  #enquiry { background: var(--near-black); border-top: 1px solid var(--border); }
+  .enq-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
+  .enq-h { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,4vw,4.5rem); color: var(--white); line-height: 0.95; margin-bottom: 1.5rem; }
+  .enq-info { color: var(--grey-light); font-size: 0.9rem; line-height: 1.8; margin-bottom: 2rem; }
+  .c-item { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 0.9rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--border); }
+  .c-item:last-child { border-bottom: none; }
+  .c-icon { font-size: 0.95rem; flex-shrink: 0; margin-top: 2px; }
+  .c-label { font-family: 'DM Mono', monospace; font-size: 0.57rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.2rem; }
+  .c-val { color: var(--silver); font-size: 0.85rem; }
+  .form-box { background: var(--dark); border: 1px solid var(--border); border-radius: 4px; padding: 2rem; }
+  .f-group { margin-bottom: 1.3rem; }
+  .f-label { display: block; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--grey); margin-bottom: 0.45rem; }
+  .f-input, .f-select, .f-textarea {
+    width: 100%; background: var(--dark-2); border: 1px solid var(--border);
+    color: var(--white); padding: 11px 15px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.87rem; border-radius: 3px; outline: none; transition: border-color 0.2s; -webkit-appearance: none;
+  }
+  .f-input:focus, .f-select:focus, .f-textarea:focus { border-color: var(--accent); }
+  .f-input::placeholder, .f-textarea::placeholder { color: var(--grey-dark); }
+  .f-select option { background: var(--dark-2); }
+  .f-textarea { resize: vertical; min-height: 110px; }
+  .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--dark); border-top: 1px solid var(--border); padding: 4rem 5% 2rem; }
+  .ft-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+  .ft-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; letter-spacing: 0.1em; color: var(--white); margin-bottom: 0.8rem; }
+  .ft-brand span { color: var(--accent); }
+  .ft-tagline { color: var(--grey); font-size: 0.82rem; line-height: 1.7; max-width: 240px; }
+  .ft-col-title { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.1rem; }
+  .ft-links { list-style: none; }
+  .ft-links li { margin-bottom: 0.55rem; }
+  .ft-links a { text-decoration: none; color: var(--grey); font-size: 0.83rem; transition: color 0.2s; }
+  .ft-links a:hover { color: var(--white); }
+  .ft-bottom { border-top: 1px solid var(--border); padding-top: 1.4rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .ft-copy, .ft-reg { font-family: 'DM Mono', monospace; font-size: 0.61rem; letter-spacing: 0.09em; color: var(--grey-dark); }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-mark"></div>
+    <span class="nav-logo-text">Blue<span>Engineering</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#sustainability">Sustainability</a></li>
+    <li><a href="#sdg">SDG</a></li>
+    <li><a href="#values">Values</a></li>
+    <li><a href="#hierarchy">Team</a></li>
+    <li><a href="#products">Projects</a></li>
+    <li><a href="#sales">Work With Us</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#enquiry" class="nav-cta">Enquire</a></li>
+  </ul>
+  <button class="hamburger" id="hbg" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-nav" id="mobNav">
+  <a href="#about" onclick="closeMob()">About</a>
+  <a href="#sustainability" onclick="closeMob()">Sustainability</a>
+  <a href="#sdg" onclick="closeMob()">UN SDG</a>
+  <a href="#values" onclick="closeMob()">Values</a>
+  <a href="#hierarchy" onclick="closeMob()">Team</a>
+  <a href="#products" onclick="closeMob()">Projects</a>
+  <a href="#sales" onclick="closeMob()">Work With Us</a>
+  <a href="#testimonials" onclick="closeMob()">Reviews</a>
+  <a href="#enquiry" onclick="closeMob()">Enquire</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Student-Led · Innovation-Driven · Malaysia</div>
+    <h1 class="hero-h1">ENGINEERING<br><span class="ac">BEYOND</span><br>THE CLASSROOM</h1>
+    <p class="hero-sub">BlueEngineering is a student-led team bridging academic theory and real-world application — building smart, sustainable systems through IoT, AI, and hands-on engineering.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-primary">See Our Projects →</a>
+      <a href="#enquiry" class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">2<span>+</span></div><div class="stat-label">Active Projects</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Team Members</div></div>
+    <div class="stat"><div class="stat-num">10<span>+</span></div><div class="stat-label">Competitions</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="two-col fade-in">
+    <div>
+      <div class="section-label">Who We Are</div>
+      <h2 class="about-h">ABOUT BLUE&shy;ENGINEERING</h2>
+      <p class="body-p">BlueEngineering is a student-led engineering team formed by a group of passionate individuals who wanted to go beyond lectures, tutorials, and exams. What began as a small collaboration between classmates has grown into a platform where we actively design, build, and test ideas that aim to solve real-world problems.</p>
+      <p class="body-p">As engineering students, we realised early on that true understanding comes from application. BlueEngineering was created to bridge that gap — giving us a space to experiment, make mistakes, iterate, and ultimately turn concepts into working solutions. Through this, we develop not only technical skills, but also our ability to think critically, adapt, and work effectively as a team.</p>
+      <p class="body-p">Our work focuses on automation, smart systems, and digital integration. We are particularly interested in emerging technologies like IoT, AI, and data-driven engineering, and how these can be applied in practical, meaningful ways. Rather than building for the sake of complexity, we aim to create solutions that are efficient, purposeful, and grounded in real use cases.</p>
+      <p class="body-p">We may still be students, but we are driven by a genuine desire to create, contribute, and continuously improve. BlueEngineering represents that mindset — a starting point for ideas that we hope will one day scale beyond the classroom.</p>
+    </div>
+    <div>
+      <div class="vm-stack">
+        <div class="vm-card fade-in">
+          <div class="vm-label">Our Vision</div>
+          <div class="vm-text">To grow into a team of engineers who use technology and innovation to create practical, sustainable solutions for real-world challenges.</div>
+        </div>
+        <div class="vm-card fade-in">
+          <div class="vm-label">Our Mission</div>
+          <ul class="mission-list">
+            <li>Apply engineering knowledge beyond the classroom through hands-on projects and experimentation</li>
+            <li>Explore and integrate emerging technologies like AI, IoT, and automation into meaningful solutions</li>
+            <li>Develop skills, teamwork, and problem-solving abilities through real project experience</li>
+            <li>Contribute ideas that promote efficiency, sustainability, and smarter systems</li>
+          </ul>
+        </div>
+        <div class="vm-card fade-in">
+          <div class="vm-label">Our Foundation</div>
+          <div class="vm-text">Many of our projects are inspired by challenges in industries such as manufacturing, construction, and infrastructure. Every project is an opportunity to build experience, strengthen collaboration, and push our own boundaries as future engineers.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SUSTAINABILITY ═══ -->
+<section id="sustainability">
+  <div class="fade-in">
+    <div class="section-label">Our Commitment</div>
+    <h2 class="big-h">SUSTAINABILITY COMMITMENTS</h2>
+    <p class="sustain-intro">As a student team, we are still learning — but sustainability is something we actively strive to incorporate into everything we build. We believe thoughtful design choices matter, even at the earliest stages.</p>
+  </div>
+  <div class="sustain-grid fade-in">
+    <div class="s-item">
+      <span class="s-icon">🎯</span>
+      <div><div class="s-title">Mindful Design</div><div class="s-text">We aim to design systems that reduce waste and improve efficiency wherever possible — considering environmental impact from the first sketch.</div></div>
+    </div>
+    <div class="s-item">
+      <span class="s-icon">📚</span>
+      <div><div class="s-title">Learning Sustainable Practices</div><div class="s-text">Continuously exploring how engineering decisions impact the environment — and incorporating those lessons into our designs.</div></div>
+    </div>
+    <div class="s-item">
+      <span class="s-icon">🔍</span>
+      <div><div class="s-title">Responsible Innovation</div><div class="s-text">Considering long-term effects, not just immediate functionality. Every solution we build is evaluated for its broader impact.</div></div>
+    </div>
+    <div class="s-item">
+      <span class="s-icon">🌱</span>
+      <div><div class="s-title">Small Steps, Real Impact</div><div class="s-text">Even at a student level, we believe thoughtful design choices matter. Each project is a chance to demonstrate that engineering and sustainability go hand in hand.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SDG ═══ -->
+<section id="sdg">
+  <div class="fade-in">
+    <div class="section-label">Global Impact</div>
+    <h2 class="big-h">UN SDG ALIGNMENT</h2>
+    <p class="sdg-intro">Our IVIS project directly contributes to multiple United Nations Sustainable Development Goals — demonstrating that student-level innovation can have real global relevance.</p>
+  </div>
+  <div class="sdg-grid fade-in">
+    <div class="sdg-card">
+      <div class="sdg-num">SDG 7</div>
+      <div class="sdg-title">Affordable &amp; Clean Energy</div>
+      <div class="sdg-desc">IVIS reduces energy wastage in construction by improving inspection accuracy — enabling up to 20% energy savings and approximately 48 GWh saved annually.</div>
+      <div class="sdg-stat">48 GWh<span>saved / year</span></div>
+    </div>
+    <div class="sdg-card">
+      <div class="sdg-num">SDG 9</div>
+      <div class="sdg-title">Industry, Innovation &amp; Infrastructure</div>
+      <div class="sdg-desc">IVIS promotes smart construction technology and supports Malaysia's transition to digitally integrated, AI-driven infrastructure inspection.</div>
+      <div class="sdg-stat">0.831<span>AI precision score</span></div>
+    </div>
+    <div class="sdg-card">
+      <div class="sdg-num">SDG 11</div>
+      <div class="sdg-title">Sustainable Cities &amp; Communities</div>
+      <div class="sdg-desc">By ensuring higher quality construction inspection, IVIS contributes to safer, more durable urban infrastructure and sustainable built environments.</div>
+      <div class="sdg-stat">~10,000 t<span>CO₂ avoided / yr</span></div>
+    </div>
+    <div class="sdg-card">
+      <div class="sdg-num">SDG 12</div>
+      <div class="sdg-title">Responsible Consumption &amp; Production</div>
+      <div class="sdg-desc">IVIS drastically cuts construction waste — from up to 54.6 t per 100m² down to 1–1.5 t — reducing overproduction and material waste at the source.</div>
+      <div class="sdg-stat">41.4%<span>CO₂ reduction</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ VALUES ═══ -->
+<section id="values" style="background:var(--near-black);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div style="text-align:center;margin-bottom:3.5rem;" class="fade-in">
+    <div class="section-label center">Core Principles</div>
+    <h2 class="big-h">OUR CORE VALUES</h2>
+  </div>
+  <div class="values-grid fade-in">
+    <div class="value-item" style="background:var(--near-black);"><div class="value-num">01</div><div class="value-icon">🔍</div><div class="value-title">Curiosity</div><div class="value-desc">We ask questions, explore ideas, and aren't afraid to try something new. Curiosity is what drives us to look for solutions where others see only problems.</div></div>
+    <div class="value-item" style="background:var(--near-black);"><div class="value-num">02</div><div class="value-icon">📈</div><div class="value-title">Growth</div><div class="value-desc">We see every project as an opportunity to learn, improve, and develop as engineers. Failure is not the end — it's the beginning of a better design.</div></div>
+    <div class="value-item" style="background:var(--near-black);"><div class="value-num">03</div><div class="value-icon">🤝</div><div class="value-title">Collaboration</div><div class="value-desc">We work as a team, sharing knowledge and supporting each other throughout the process. The best solutions are always built together.</div></div>
+    <div class="value-item" style="background:var(--near-black);"><div class="value-num">04</div><div class="value-icon">⚙️</div><div class="value-title">Practicality</div><div class="value-desc">We focus on building solutions that work — not just in theory, but in real applications. Good engineering is measured by what actually functions in the field.</div></div>
+    <div class="value-item" style="background:var(--near-black);"><div class="value-num">05</div><div class="value-icon">🌏</div><div class="value-title">Responsibility</div><div class="value-desc">We are mindful of the impact our designs and decisions can have on people and the environment. Engineering carries responsibility — we take that seriously.</div></div>
+    <div class="value-item" style="background:var(--near-black);"><div class="value-num">06</div><div class="value-icon">🚀</div><div class="value-title">Initiative</div><div class="value-desc">We take the first step — turning ideas into action rather than waiting for opportunities. BlueEngineering exists because someone decided to start.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ HIERARCHY ═══ -->
+<section id="hierarchy">
+  <div style="text-align:center;margin-bottom:3.5rem;" class="fade-in">
+    <div class="section-label center">The Team</div>
+    <h2 class="big-h">MEET THE TEAM</h2>
+  </div>
+  <div class="org-chart fade-in">
+
+    <!-- Level 1 -->
+    <div style="display:flex;justify-content:center;width:100%;">
+      <div class="org-node top">
+        <div class="role">Managing Director</div>
+        <div class="name">Cheerful</div>
+        <div class="fullname">Loh Yue Hung</div>
+        <div class="tags">
+          <span class="org-tag">Secretary</span>
+          <span class="org-tag">Software Engineer — Autonomous Control, FSM Logic, Integration</span>
+          <span class="org-tag">Workshop Engineer</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="org-v"></div>
+    <div class="org-h-wrap"><div class="org-h"></div></div>
+
+    <!-- Level 2 -->
+    <div class="org-row">
+      <div class="org-node">
+        <div class="role">Managing Director</div>
+        <div class="name">Cheerful</div>
+        <div class="fullname">Loh Yue Hung</div>
+        <div class="tags">
+          <span class="org-tag">Secretary</span>
+          <span class="org-tag">Software Engineer — Autonomous Control, FSM Logic, Integration</span>
+          <span class="org-tag">Workshop Engineer</span>
+        </div>
+      </div>
+      <div class="org-node">
+        <div class="role">Mechanical Designer</div>
+        <div class="name">Nathan</div>
+        <div class="fullname">Yong Zi Cheng</div>
+        <div class="tags">
+          <span class="org-tag">CAD, Drawing &amp; Fabrication</span>
+          <span class="org-tag">Component Selection</span>
+          <span class="org-tag">Workshop Engineer</span>
+          <span class="org-tag">Web Designer</span>
+        </div>
+      </div>
+      <div class="org-node">
+        <div class="role">Electronics &amp; Wiring Engineer</div>
+        <div class="name">Jun Heng</div>
+        <div class="fullname">Sim Jun Heng</div>
+        <div class="tags">
+          <span class="org-tag">Power Electronics &amp; Battery Mgmt</span>
+          <span class="org-tag">Public Relations Organiser</span>
+          <span class="org-tag">Workshop Engineer</span>
+        </div>
+      </div>
+      <div class="org-node">
+        <div class="role">Digital Systems Engineer</div>
+        <div class="name">Sky</div>
+        <div class="fullname">Elaine Lee Yi Lin</div>
+        <div class="tags">
+          <span class="org-tag">Sensor Placement &amp; Hardware Code</span>
+          <span class="org-tag">Hardware Integration</span>
+          <span class="org-tag">Workshop Engineer</span>
+          <span class="org-tag">Web Designer</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ PRODUCTS ═══ -->
+<section id="products" style="background:var(--near-black);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="fade-in" style="margin-bottom:2.5rem;">
+    <div class="section-label">Our Work</div>
+    <h2 class="big-h">PROJECT PROFILES</h2>
+  </div>
+  <div class="product-tabs fade-in">
+    <button class="tab-btn active" onclick="showTab('arrs',this)">ARRS — Autonomous Robot Recycling System</button>
+    <button class="tab-btn" onclick="showTab('ivis',this)">IVIS — Integrated Vision Inspection System</button>
+  </div>
+
+  <!-- ── ARRS ── -->
+  <div id="tab-arrs" class="tab-pane active">
+    <div class="product-layout">
+      <div>
+        <div class="img-gallery">
+          <img id="arrs-main" class="img-main"
+               src="System_Project_Assembly3(ARRS).png"
+               alt="ARRS View 1" 
+               style="width:100%; height:100%; object-fit:contain;"
+            <img id="arrs-main" class="img-main"
+            src="System_Project_Assembly2(ARRS).png"
+            alt="ARRS View 2" 
+            style="width:100%; height:100%; object-fit:contain;">
+            <img id="arrs-main" class="img-main"       
+            src="System_Project_Assembly(ARRS).png"
+            alt="ARRS View 3" 
+            style="width:100%; height:100%; object-fit:contain;">
+          </div>
+        </div>
+      <div>
+        <div class="product-name">ARRS</div>
+        <div class="product-full">Autonomous Robot Recycling System</div>
+        <p class="product-desc">ARRS is BlueEngineering's autonomous mobile robot platform designed to address the challenge of recyclable material sorting and handling. The system integrates a mecanum-wheel chassis for omnidirectional mobility with a multi-axis robotic arm capable of identifying, gripping, and sorting recyclable items autonomously.</p>
+        <p class="product-desc">Designed and assembled entirely in-house by the team, the ARRS hardware architecture features onboard processing, sensor fusion, and a rotating turntable mechanism for efficient material management — a practical prototype for smart recycling automation.</p>
+        <ul class="product-features">
+          <li>Omnidirectional mecanum-wheel drive for precise, unrestricted movement</li>
+          <li>Multi-axis robotic arm with end-effector gripper for material handling</li>
+          <li>Onboard sensors for environmental awareness and obstacle avoidance</li>
+          <li>Rotating turntable mechanism for sorting zone management</li>
+          <li>Integrated electronics bay with motor controllers and processing unit</li>
+          <li>LCD status display and emergency stop for safe operation</li>
+          <li>Compact, modular chassis designed for iterative improvement</li>
+          <li>Fully designed and assembled in-house by the BlueEngineering team</li>
+        </ul>
+        <a href="#enquiry" class="btn-primary">Enquire About ARRS →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── IVIS ── -->
+  <div id="tab-ivis" class="tab-pane">
+    <div class="product-layout">
+      <!-- LEFT: Image gallery + impact bars -->
+      <div>
+        <div class="img-gallery">
+          <img id="ivis-main" class="img-main light-bg"
+                 src="IVIS_1.jpeg"
+                 alt="IVIS View 1"
+                 style="width:100%; height:100%; object-fit:contain;"
+        <div style="margin-top:1.2rem;">
+          <div class="impact-bar"><div class="impact-num">RM 2,800</div><div class="impact-text">Estimated pilot implementation cost</div></div>
+          <div class="impact-bar"><div class="impact-num">ROI 45.8%</div><div class="impact-text">Return on investment over 3 years</div></div>
+          <div class="impact-bar"><div class="impact-num">0.831</div><div class="impact-text">YOLOv8 model precision after optimisation</div></div>
+        </div>
+      </div>
+      <!-- RIGHT: Info -->
+      <div>
+        <div class="product-name">IVIS</div>
+        <div class="product-full">Integrated Vision Inspection System</div>
+        <p class="product-desc">IVIS is a wearable AI-powered defect detection system designed to transform Quality Assurance and Quality Control (QAQC) in the construction industry. It addresses two critical pain points: ineffective defect reporting during Material Receiving Inspection (MRI) and heavy reliance on error-prone manual labour during Work Inspection Request (WIR) stages.</p>
+        <p class="product-desc">Built around safety goggles with dual ESP32-CAM modules, IVIS provides hands-free, real-time defect detection — automatically logging findings via GPS, converting coordinates to project grid references, and integrating directly with BIM models and IFC drawings for precise defect localisation.</p>
+        <div class="ivis-specs">
+          <div class="ivis-spec"><div class="ivis-spec-label">Hardware</div><div class="ivis-spec-val">Dual ESP32-CAM</div></div>
+          <div class="ivis-spec"><div class="ivis-spec-label">AI Model</div><div class="ivis-spec-val">YOLOv8n</div></div>
+          <div class="ivis-spec"><div class="ivis-spec-label">Defect Types</div><div class="ivis-spec-val">Holes, Cracks, Corrosion, Dents</div></div>
+          <div class="ivis-spec"><div class="ivis-spec-label">Data Storage</div><div class="ivis-spec-val">Cloud-Based IoT</div></div>
+          <div class="ivis-spec"><div class="ivis-spec-label">Localisation</div><div class="ivis-spec-val">GPS + Project Grid Coords</div></div>
+          <div class="ivis-spec"><div class="ivis-spec-label">BIM Output</div><div class="ivis-spec-val">IFC / BIM Model Integration</div></div>
+        </div>
+        <ul class="product-features">
+          <li>Wearable, hands-free design — no interruption to engineer's workflow</li>
+          <li>Real-time stereo video capture and AI-powered defect classification</li>
+          <li>GPS-tagged inspection points converted to project grid coordinates</li>
+          <li>Automatic cloud logging and comprehensive defect report generation</li>
+          <li>Direct integration into IFC drawings and BIM models</li>
+          <li>Reduces construction waste from 54.6 t/100m² to ~1–1.5 t</li>
+          <li>Extendable to automotive, drone inspection, and solar panel monitoring</li>
+          <li>Compliant with MCMC, ISO 19650, and DOSH safety guidelines</li>
+        </ul>
+        <a href="#enquiry" class="btn-primary">Enquire About IVIS →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SALES ═══ -->
+<section id="sales">
+  <div class="fade-in" style="margin-bottom:3rem;">
+    <div class="section-label">Solutions &amp; Collaboration</div>
+    <h2 class="big-h">WORK WITH US</h2>
+    <p style="color:var(--grey-light);max-width:580px;font-size:.92rem;line-height:1.8;margin-top:.8rem;">Whether you're a company looking to pilot smart inspection technology, an institution interested in collaboration, or a competition organiser — we're open to exploring how our projects can create real-world value together.</p>
+  </div>
+  <div class="sales-cards fade-in">
+    <div class="sale-card">
+      <div class="sale-card-head">
+        <span class="sale-card-icon">🤖</span>
+        <div><div class="sale-card-title">ARRS</div><div class="sale-card-sub">Autonomous Robot Recycling System</div></div>
+      </div>
+      <div class="sale-card-body">
+        <div class="sale-badge">Robotics &amp; Automation</div>
+        <p class="sale-desc">An autonomous mobile robot prototype integrating omnidirectional drive, a robotic arm, and onboard sensing — designed for recyclable material sorting and smart handling.</p>
+        <ul class="sale-specs">
+          <li><span class="sk">Mobility</span><span class="sv">Mecanum Omnidirectional</span></li>
+          <li><span class="sk">Manipulation</span><span class="sv">Multi-axis Robotic Arm</span></li>
+          <li><span class="sk">Application</span><span class="sv">Recycling &amp; Material Sorting</span></li>
+          <li><span class="sk">Design</span><span class="sv">In-House CAD &amp; Assembly</span></li>
+          <li><span class="sk">Stage</span><span class="sv">Functional Prototype</span></li>
+        </ul>
+        <a href="mailto:blueengineering@email.com?subject=ARRS Collaboration Enquiry" class="btn-primary" style="width:100%;justify-content:center;">Enquire About ARRS →</a>
+      </div>
+    </div>
+    <div class="sale-card">
+      <div class="sale-card-head">
+        <span class="sale-card-icon">🥽</span>
+        <div><div class="sale-card-title">IVIS</div><div class="sale-card-sub">Integrated Vision Inspection System</div></div>
+      </div>
+      <div class="sale-card-body">
+        <div class="sale-badge">AI · IoT · Construction Tech</div>
+        <p class="sale-desc">A wearable AI-powered defect detection solution for QAQC engineers — featuring dual ESP32-CAM, YOLOv8 real-time detection, GPS-tagged reporting, and BIM model integration.</p>
+        <ul class="sale-specs">
+          <li><span class="sk">AI Model</span><span class="sv">YOLOv8n (Precision 0.831)</span></li>
+          <li><span class="sk">Connectivity</span><span class="sv">IoT Cloud-Based Logging</span></li>
+          <li><span class="sk">Integration</span><span class="sv">BIM / IFC Model Output</span></li>
+          <li><span class="sk">Pilot Cost</span><span class="sv">~RM 2,800</span></li>
+          <li><span class="sk">Stage</span><span class="sv">Prototype — Pilot Ready</span></li>
+        </ul>
+        <a href="mailto:blueengineering@email.com?subject=IVIS Collaboration Enquiry" class="btn-primary" style="width:100%;justify-content:center;">Enquire About IVIS →</a>
+      </div>
+    </div>
+    <div class="sale-card featured">
+      <div class="sale-card-head feat">
+        <span class="sale-card-icon">🏫</span>
+        <div><div class="sale-card-title">Collaborate</div><div class="sale-card-sub">Research, Pilot &amp; Industry Partnership</div></div>
+      </div>
+      <div class="sale-card-body">
+        <div class="sale-badge feat">Open to Proposals</div>
+        <p class="sale-desc">We are open to collaboration with companies, research institutions, and industry partners who want to pilot, co-develop, or provide feedback on our projects.</p>
+        <ul class="sale-specs">
+          <li><span class="sk">Industry Pilot</span><span class="sv">Deployment &amp; Testing</span></li>
+          <li><span class="sk">R&amp;D Partnership</span><span class="sv">Joint Development</span></li>
+          <li><span class="sk">Mentorship</span><span class="sv">Industry Guidance Welcome</span></li>
+          <li><span class="sk">Sponsorship</span><span class="sv">Component &amp; Resource Support</span></li>
+          <li><span class="sk">Availability</span><span class="sv">Open Now</span></li>
+        </ul>
+        <a href="mailto:blueengineering@email.com?subject=Partnership Enquiry" class="btn-primary" style="width:100%;justify-content:center;">Discuss a Partnership →</a>
+      </div>
+    </div>
+  </div>
+  <div class="enquiry-strip fade-in">
+    <div>
+      <div class="es-h">INTERESTED IN OUR WORK?</div>
+      <p class="es-p">We welcome opportunities to demonstrate our systems, discuss pilot deployments, or explore how our solutions might fit your organisation's needs. Reach out — we respond quickly.</p>
+    </div>
+    <a href="mailto:blueengineering@email.com?subject=General Enquiry" class="btn-primary" style="white-space:nowrap;">Get In Touch →</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section id="testimonials" style="background:var(--near-black);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div style="text-align:center;margin-bottom:3.5rem;" class="fade-in">
+    <div class="section-label center">Feedback &amp; Recognition</div>
+    <h2 class="big-h">WHAT PEOPLE SAY</h2>
+  </div>
+  <div class="test-grid fade-in">
+    <div class="test-card"><div class="test-quote">"</div><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div><p class="test-text">The IVIS concept is genuinely innovative for the construction sector. The team demonstrated a strong understanding of the problem space and delivered a technically credible solution with real industry relevance. Impressive for a student-led team.</p><div class="test-author"><div class="test-av">JP</div><div><div class="test-name">Matthew</div><div class="test-role">Green Engineering &amp; Innovation Track</div></div></div></div>
+    <div class="test-card"><div class="test-quote">"</div><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div><p class="test-text">What stood out was not just the technical execution, but the thoroughness of their research. The financial analysis, SWOT, and SDG alignment showed a level of maturity in thinking that goes well beyond typical student project work.</p><div class="test-author"><div class="test-av">HA</div><div><div class="test-name">Kishore</div><div class="test-role">Engineering Faculty, Malaysia</div></div></div></div>
+    <div class="test-card"><div class="test-quote">"</div><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div><p class="test-text">The ARRS robot assembly is well-designed. The mecanum wheels combined with the robotic arm shows solid mechanical thinking. You can see the iteration in the design — it's not their first version, and that shows in the quality.</p><div class="test-author"><div class="test-av">TK</div><div><div class="test-name">Dheeraj</div><div class="test-role">Robotics &amp; Automation Engineer</div></div></div></div>
+    <div class="test-card"><div class="test-quote">"</div><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div><p class="test-text">What makes BlueEngineering different is their focus on real-world application. IVIS doesn't just detect defects — it integrates with BIM. That level of thinking about downstream utility is rare at this stage.</p><div class="test-author"><div class="test-av">LW</div><div><div class="test-name">Ruben</div><div class="test-role">Digital Construction, Malaysia</div></div></div></div>
+    <div class="test-card"><div class="test-quote">"</div><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">☆</span></div><p class="test-text">The sustainability angle is well thought through. Linking IVIS to Malaysia's net-zero goals and the SDGs isn't just window dressing — the data they presented on waste and emissions reduction is backed by real research.</p><div class="test-author"><div class="test-av">NR</div><div><div class="test-name">Fawwaz</div><div class="test-role">Green Technology Programme</div></div></div></div>
+    <div class="test-card"><div class="test-quote">"</div><div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div><p class="test-text">It's rare to see students build systems that are this close to deployment-ready. BlueEngineering understands that great ideas mean nothing without execution — and their prototypes show that they can actually deliver.</p><div class="test-author"><div class="test-av">MC</div><div><div class="test-name">Chin</div><div class="test-role">Innovation Competition, 2024</div></div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ ENQUIRY ═══ -->
+<section id="enquiry">
+  <div class="enq-layout">
+    <div class="fade-in">
+      <div class="section-label">Get In Touch</div>
+      <h2 class="enq-h">SEND US AN ENQUIRY</h2>
+      <p class="enq-info">Interested in our projects, want to collaborate, or looking to pilot one of our systems? Fill in the form and we'll get back to you within 2 working days.</p>
+      <div class="c-item"><span class="c-icon">📧</span><div><div class="c-label">Email</div><div class="c-val">blueengineering@email.com</div></div></div>
+      <div class="c-item"><span class="c-icon">🏫</span><div><div class="c-label">Based At</div><div class="c-val">Malaysia · Engineering Faculty</div></div></div>
+      <div class="c-item"><span class="c-icon">💼</span><div><div class="c-label">Open To</div><div class="c-val">Collaborations, Pilots, Mentorship, Sponsorship</div></div></div>
+      <div class="c-item"><span class="c-icon">🕐</span><div><div class="c-label">Response Time</div><div class="c-val">Within 2 Working Days</div></div></div>
+    </div>
+    <div class="fade-in">
+      <div class="form-box">
+        <div class="f-row">
+          <div class="f-group"><label class="f-label">First Name *</label><input type="text" class="f-input" placeholder="Ahmad" id="f-fname"></div>
+          <div class="f-group"><label class="f-label">Last Name *</label><input type="text" class="f-input" placeholder="Ibrahim" id="f-lname"></div>
+        </div>
+        <div class="f-group"><label class="f-label">Organisation / Institution *</label><input type="text" class="f-input" placeholder="Company, University, Agency..." id="f-company"></div>
+        <div class="f-group"><label class="f-label">Email Address *</label><input type="email" class="f-input" placeholder="your@email.com" id="f-email"></div>
+        <div class="f-group"><label class="f-label">Phone Number</label><input type="tel" class="f-input" placeholder="+6012 XXX XXXX" id="f-phone"></div>
+        <div class="f-group">
+          <label class="f-label">Area of Interest *</label>
+          <select class="f-select" id="f-product">
+            <option value="" disabled selected>Select an option...</option>
+            <option>ARRS — Autonomous Robot Recycling System</option>
+            <option>IVIS — Integrated Vision Inspection System</option>
+            <option>Both Projects</option>
+            <option>Industry Collaboration / Partnership</option>
+            <option>Sponsorship / Resource Support</option>
+            <option>General Enquiry</option>
+          </select>
+        </div>
+        <div class="f-group"><label class="f-label">Message *</label><textarea class="f-textarea" placeholder="Tell us about your interest, project, or collaboration idea..." id="f-message"></textarea></div>
+        <button onclick="submitEnq()" class="btn-primary" style="width:100%;justify-content:center;font-size:.82rem;padding:14px 26px;">Send Enquiry →</button>
+        <p style="text-align:center;color:var(--grey-dark);font-size:.68rem;margin-top:.9rem;font-family:'DM Mono',monospace;letter-spacing:.08em;">Your information is kept private and not shared with third parties.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="ft-top">
+    <div>
+      <div class="ft-brand">Blue<span>Engineering</span></div>
+      <p class="ft-tagline">A student-led engineering team building practical, innovative, and sustainable solutions — from the classroom to the real world.</p>
+    </div>
+    <div>
+      <div class="ft-col-title">Company</div>
+      <ul class="ft-links">
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#sustainability">Sustainability</a></li>
+        <li><a href="#sdg">UN SDG Alignment</a></li>
+        <li><a href="#values">Our Values</a></li>
+        <li><a href="#hierarchy">The Team</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-col-title">Projects</div>
+      <ul class="ft-links">
+        <li><a href="#products">ARRS System</a></li>
+        <li><a href="#products">IVIS System</a></li>
+        <li><a href="#sales">Work With Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-col-title">Contact</div>
+      <ul class="ft-links">
+        <li><a href="#enquiry">Send Enquiry</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="mailto:blueengineering@email.com">blueengineering@email.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <div class="ft-copy">© 2024 BlueEngineering. All rights reserved.</div>
+    <div class="ft-reg">Student Engineering Team · Malaysia</div>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav
+  document.getElementById('hbg').addEventListener('click', () => {
+    document.getElementById('mobNav').classList.toggle('open');
+  });
+  function closeMob() { document.getElementById('mobNav').classList.remove('open'); }
+
+  // Tab switching
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Image switcher — scoped per product
+  const allImgs = [
+  "System_Project_Assembly3(ARRS).png",
+  "System_Project_Assembly2(ARRS).png",
+  "System_Project_Assembly(ARRS).png",
+  "IVIS_1.jpeg",
+  "IVIS_2.jpeg"
+  ];
+
+  function switchImg(product, thumb, idx) {
+    document.getElementById(product + '-main').src = allImgs[product][idx];
+    const pane = document.getElementById('tab-' + product);
+    pane.querySelectorAll('.img-thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+  }
+
+  // Scroll fade-in
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  // Enquiry form → mailto
+  function submitEnq() {
+    const fname   = document.getElementById('f-fname').value.trim();
+    const lname   = document.getElementById('f-lname').value.trim();
+    const company = document.getElementById('f-company').value.trim();
+    const email   = document.getElementById('f-email').value.trim();
+    const product = document.getElementById('f-product').value;
+    const message = document.getElementById('f-message').value.trim();
+    if (!fname || !lname || !company || !email || !product || !message) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    const sub  = encodeURIComponent('Enquiry — ' + product);
+    const body = encodeURIComponent(
+      'Name: ' + fname + ' ' + lname + '\n' +
+      'Organisation: ' + company + '\n' +
+      'Email: ' + email + '\n' +
+      'Phone: ' + (document.getElementById('f-phone').value || 'N/A') + '\n' +
+      'Interest: ' + product + '\n\nMessage:\n' + message
+    );
+    window.location.href = 'mailto:blueengineering@email.com?subject=' + sub + '&body=' + body;
+  }
+</script>
+</body>
+</html>
