@@ -84,6 +84,11 @@
   .mobile-nav a:last-child { border-bottom: none; }
   .mobile-nav a:hover { color: var(--white); }
 
+  @media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  nav { padding: 0 4%; }
+
   /* ── LAYOUT ── */
   section { padding: 100px 5%; }
   .divider { height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
