@@ -407,6 +407,24 @@
   .ft-bottom { border-top: 1px solid var(--border); padding-top: 1.4rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
   .ft-copy, .ft-reg { font-family: 'DM Mono', monospace; font-size: 0.61rem; letter-spacing: 0.09em; color: var(--grey-dark); }
 
+@media (max-width:900px){
+  /* NAV: hide links, show hamburger */
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  /* layouts */
+  .two-col{grid-template-columns:1fr;gap:3rem}
+  .prod-layout{grid-template-columns:1fr;gap:3rem}
+  .enq-layout{grid-template-columns:1fr;gap:3rem}
+  .enq-strip{grid-template-columns:1fr;gap:1.5rem}
+  .ft-top{grid-template-columns:1fr 1fr;gap:2rem}
+  .org-row{grid-template-columns:1fr 1fr}
+  /* hero stats: unstick from bottom */
+  .hero-stats{position:static;margin-top:3rem;justify-content:flex-start}
+  .stat{text-align:left}
+  /* forms */
+  .f-row{grid-template-columns:1fr}
+}
+  
   @media (max-width:480px){
   section{padding:70px 4%}
   /* footer: single column */
