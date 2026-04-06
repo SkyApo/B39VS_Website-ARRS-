@@ -84,11 +84,6 @@
   .mobile-nav a:last-child { border-bottom: none; }
   .mobile-nav a:hover { color: var(--white); }
 
-  @media (max-width: 768px) {
-  .nav-links { display: none; }
-  .hamburger { display: flex; }
-  nav { padding: 0 4%; }
-
   /* ── LAYOUT ── */
   section { padding: 100px 5%; }
   .divider { height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
@@ -411,6 +406,25 @@
   .ft-links a:hover { color: var(--white); }
   .ft-bottom { border-top: 1px solid var(--border); padding-top: 1.4rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
   .ft-copy, .ft-reg { font-family: 'DM Mono', monospace; font-size: 0.61rem; letter-spacing: 0.09em; color: var(--grey-dark); }
+
+  @media (max-width:480px){
+  section{padding:70px 4%}
+  /* footer: single column */
+  .ft-top{grid-template-columns:1fr !important;gap:2rem}
+  .ft-bottom{flex-direction:column;align-items:flex-start;gap:.6rem}
+  /* hero */
+  .hero-stats{flex-direction:column;gap:1.2rem}
+  /* team */
+  .org-row{grid-template-columns:1fr}
+  /* product tabs: smaller padding */
+  .tab-btn{padding:.8rem 1rem;font-size:.62rem}
+  /* ivis specs */
+  .ivis-specs{grid-template-columns:1fr}
+  /* sales strip */
+  .enq-strip{padding:1.5rem}
+  /* nav padding */
+  nav{padding:0 4%}
+}
 </style>
 </head>
 <body>
